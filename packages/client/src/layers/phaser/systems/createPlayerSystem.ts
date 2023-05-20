@@ -1,14 +1,17 @@
 import { Has, defineEnterSystem, defineSystem, getComponentValueStrict } from "@latticexyz/recs";
 import { PhaserLayer } from "../createPhaserLayer";
 import { pixelCoordToTileCoord, tileCoordToPixelCoord } from "@latticexyz/phaserx";
-import { Animations, TILE_HEIGHT, TILE_WIDTH } from "../constants";
+import { Animations, Direction, TILE_HEIGHT, TILE_WIDTH } from "../constants";
 
 export const createPlayerSystem = (layer: PhaserLayer) => {
   const {
     world,
     networkLayer:{
       components:{Position},
-      systemCalls:{spawn,}
+      systemCalls:{
+        spawn,
+        move,
+      }
     },
     scenes:{
       Main:{
@@ -27,6 +30,20 @@ export const createPlayerSystem = (layer: PhaserLayer) => {
     spawn(position.x,position.y);
 
   });
+
+  input.onKeyPress((keys)=>keys.has("W"),()=>{
+    move(Direction.Up);
+  });
+  input.onKeyPress((keys)=>keys.has("S"),()=>{
+    move(Direction.Down);
+  });
+  input.onKeyPress((keys)=>keys.has("A"),()=>{
+    move(Direction.Left);
+  });
+  input.onKeyPress((keys)=>keys.has("D"),()=>{
+    move(Direction.Right);
+  });
+
 
   defineEnterSystem(world,[Has(Position)],({entity})=>{
     const playerObj = objectPool.get(entity,"Sprite");

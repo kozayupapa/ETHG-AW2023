@@ -2,6 +2,7 @@ import { getComponentValue } from "@latticexyz/recs";
 import { awaitStreamValue } from "@latticexyz/utils";
 import { ClientComponents } from "./createClientComponents";
 import { SetupNetworkResult } from "./setupNetwork";
+import { Direction } from "../layers/phaser/constants";
 
 export type SystemCalls = ReturnType<typeof createSystemCalls>;
 
@@ -18,8 +19,12 @@ export function createSystemCalls(
   const spawn = (x:number, y:number) => {
     worldSend("spawn",[x,y]);
   }
+  const move = ( dir:Direction) => {
+    worldSend("move",[dir]);
+  }
   return {
     increment,
-    spawn
+    spawn,
+    move,
   };
 }

@@ -8,8 +8,10 @@ import {
   PositionData,
   PositionTableId 
 } from "../codegen/Tables.sol";
+import {Direction} from "../codegen/Types.sol";
 
 import {getKeysWithValue} from "@latticexyz/world/src/modules/keyswithvalue/getKeysWithValue.sol";
+
 //import {addressToEntity} from 
 
 contract PlayerSystem is System {
@@ -24,5 +26,26 @@ contract PlayerSystem is System {
     bytes32[] memory playersAtPos = getKeysWithValue(PositionTableId, Position.encode(x,y));
     require(playersAtPos.length == 0, "spawn location occupied");
     Position.set(player, x, y);
+  }
+  function move(Direction dir) public {
+    require(dir != Direction.Unknown, "invalid direction");
+
+    address player = _msgSender();
+    PositionData memory existingPosition = Position.get(player);
+    require(existingPosition.x != 0 || existingPosition.y != 0,"pos should be setted");
+    int32 x = existingPosition.x;
+    int32 y = existingPosition.y;
+
+    if(dir == Direction.Up){
+      y -= 1;
+    } else if (dir == Direction.Down){
+      y += 1;
+    } else if (dir == Direction.Left){
+      x -= 1;
+    } else if (dir == Direction.Right){
+      x += 1;
+    }
+    Position.set(player,x,y);
+
   }
 }

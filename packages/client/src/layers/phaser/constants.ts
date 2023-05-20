@@ -10,6 +10,15 @@ export enum Animations {
   //SwordsmanIdle = "SwordsmanIdle",
   Golem = "Golem",
 }
+
+export enum Direction {
+  Unknown,
+  Up,
+  Down,
+  Left,
+  Right
+}
+
 export enum Sprites {
   Soldier,
 }
