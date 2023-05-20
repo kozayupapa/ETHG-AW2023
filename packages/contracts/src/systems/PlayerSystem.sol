@@ -36,6 +36,7 @@ contract PlayerSystem is System {
     int32 x = existingPosition.x;
     int32 y = existingPosition.y;
 
+
     if(dir == Direction.Up){
       y -= 1;
     } else if (dir == Direction.Down){
@@ -45,6 +46,10 @@ contract PlayerSystem is System {
     } else if (dir == Direction.Right){
       x += 1;
     }
+
+    bytes32[] memory playersAtPos = getKeysWithValue(PositionTableId, Position.encode(x,y));
+    require(playersAtPos.length == 0, "move location occupied");
+
     Position.set(player,x,y);
 
   }
