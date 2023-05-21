@@ -5,3 +5,4 @@ pragma solidity >=0.8.0;
 
 import { Counter, CounterTableId } from "./tables/Counter.sol";
 import { Position, PositionData, PositionTableId } from "./tables/Position.sol";
+import { Stone, StoneData, StoneTableId } from "./tables/Stone.sol";

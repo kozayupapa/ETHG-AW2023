@@ -21,6 +21,19 @@ export default mudConfig({
         y: "int32",
       },
     },
+    Stone: {
+      keySchema:{
+        xk: "int32",
+        yk: "int32",
+      },
+      schema:{
+        x: "int32",
+        y: "int32",
+        token: "address",
+        owner: "address",
+        color: "string",
+      },
+    },
   },
   modules:[
     {

@@ -16,6 +16,9 @@ export function createSystemCalls(
     return getComponentValue(Counter, singletonEntity);
   };
 
+  const spawnStone = (x:number, y:number, token:string, color:string) => {
+    worldSend("spawnStone",[x,y,token,color]);
+  }
   const spawn = (x:number, y:number) => {
     worldSend("spawn",[x,y]);
   }
@@ -24,6 +27,7 @@ export function createSystemCalls(
   }
   return {
     increment,
+    spawnStone,
     spawn,
     move,
   };
