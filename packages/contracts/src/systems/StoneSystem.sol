@@ -37,9 +37,9 @@ contract StoneSystem is System {
     bytes32 player = bytes32(uint256(uint160(_msgSender())));
 
     PlayerData memory _player = Player.get(player);
-    console.log(_player.x.length);
+    //console.log(_player.last);
     //for existing player's stones
-    for(uint i=0; i < _player.x.length; i++){
+    for(uint i=0; i < _player.last; i++){
       judgeStone(x, y, _player.x[i], _player.y[i],token, color);
     }
   }
@@ -83,14 +83,39 @@ contract StoneSystem is System {
 
   function changeStone(int32 x, int32 y, address  token, string memory color) private {
     Stone.set(x,y,x,y,token,_msgSender(),color);
+    removePlayerStone(x,y);
     addPlayerStone(x,y);
   }
 
   function addPlayerStone(int32 x, int32 y) private {
     bytes32 player = bytes32(uint256(uint160(_msgSender())));
-    PlayerData memory existingPosition = Player.get(player);
-    Player.pushX(player, x);
-    Player.pushY(player, y);    
+    PlayerData memory tp = Player.get(player);
+    if(tp.x.length <= tp.last){
+      Player.pushX(player, x);
+      Player.pushY(player, y);
+    } else {
+      Player.updateX(player,tp.last,x);
+      Player.updateY(player,tp.last,y);
+    }
+    Player.setLast(player, tp.last + 1 );
+  }
+
+  function removePlayerStone(int32 x, int32 y) private {
+    StoneData memory tstone = Stone.get(x,y);
+    bytes32 tplayer = bytes32(uint256(uint160(tstone.owner)));
+    PlayerData memory tpdata = Player.get(tplayer);
+    uint32 found = 0;
+    for(uint32 i=0; i<tpdata.last; i++){
+      if(tpdata.x[i]==x && tpdata.y[i]==y){
+        found++;
+      } else {
+        tpdata.x[i-found] = tpdata.x[i];
+        tpdata.y[i-found] = tpdata.y[i];
+      }
+    }
+    Player.setX(tplayer, tpdata.x);
+    Player.setY(tplayer, tpdata.y);
+    Player.setLast(tplayer, tpdata.last-found);
   }
 
 }

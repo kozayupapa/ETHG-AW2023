@@ -25,6 +25,7 @@ export function defineContractComponents(world: World) {
       return defineComponent(
         world,
         {
+          last: RecsType.BigInt,
           x: RecsType.NumberArray,
           y: RecsType.NumberArray,
         },

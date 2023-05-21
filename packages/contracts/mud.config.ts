@@ -17,6 +17,7 @@ export default mudConfig({
     },
     Player: {
       schema:{
+        last: "uint256",
         x: "int32[]",
         y: "int32[]",
       },

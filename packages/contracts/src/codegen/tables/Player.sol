@@ -21,6 +21,7 @@ bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("Playe
 bytes32 constant PlayerTableId = _tableId;
 
 struct PlayerData {
+  uint256 last;
   int32[] x;
   int32[] y;
 }
@@ -28,9 +29,10 @@ struct PlayerData {
 library Player {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](2);
-    _schema[0] = SchemaType.INT32_ARRAY;
+    SchemaType[] memory _schema = new SchemaType[](3);
+    _schema[0] = SchemaType.UINT256;
     _schema[1] = SchemaType.INT32_ARRAY;
+    _schema[2] = SchemaType.INT32_ARRAY;
 
     return SchemaLib.encode(_schema);
   }
@@ -44,9 +46,10 @@ library Player {
 
   /** Get the table's metadata */
   function getMetadata() internal pure returns (string memory, string[] memory) {
-    string[] memory _fieldNames = new string[](2);
-    _fieldNames[0] = "x";
-    _fieldNames[1] = "y";
+    string[] memory _fieldNames = new string[](3);
+    _fieldNames[0] = "last";
+    _fieldNames[1] = "x";
+    _fieldNames[2] = "y";
     return ("Player", _fieldNames);
   }
 
@@ -72,12 +75,46 @@ library Player {
     _store.setMetadata(_tableId, _tableName, _fieldNames);
   }
 
+  /** Get last */
+  function getLast(bytes32 key) internal view returns (uint256 last) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0);
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Get last (using the specified store) */
+  function getLast(IStore _store, bytes32 key) internal view returns (uint256 last) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 0);
+    return (uint256(Bytes.slice32(_blob, 0)));
+  }
+
+  /** Set last */
+  function setLast(bytes32 key, uint256 last) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 0, abi.encodePacked((last)));
+  }
+
+  /** Set last (using the specified store) */
+  function setLast(IStore _store, bytes32 key, uint256 last) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32((key));
+
+    _store.setField(_tableId, _keyTuple, 0, abi.encodePacked((last)));
+  }
+
   /** Get x */
   function getX(bytes32 key) internal view returns (int32[] memory x) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0);
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_int32());
   }
 
@@ -86,7 +123,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 0);
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 1);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_int32());
   }
 
@@ -95,7 +132,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.setField(_tableId, _keyTuple, 0, EncodeArray.encode((x)));
+    StoreSwitch.setField(_tableId, _keyTuple, 1, EncodeArray.encode((x)));
   }
 
   /** Set x (using the specified store) */
@@ -103,7 +140,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.setField(_tableId, _keyTuple, 0, EncodeArray.encode((x)));
+    _store.setField(_tableId, _keyTuple, 1, EncodeArray.encode((x)));
   }
 
   /** Get the length of x */
@@ -111,7 +148,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 0, getSchema());
+    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 1, getSchema());
     return _byteLength / 4;
   }
 
@@ -120,7 +157,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 0, getSchema());
+    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 1, getSchema());
     return _byteLength / 4;
   }
 
@@ -129,7 +166,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = StoreSwitch.getFieldSlice(_tableId, _keyTuple, 0, getSchema(), _index * 4, (_index + 1) * 4);
+    bytes memory _blob = StoreSwitch.getFieldSlice(_tableId, _keyTuple, 1, getSchema(), _index * 4, (_index + 1) * 4);
     return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
@@ -138,7 +175,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 0, getSchema(), _index * 4, (_index + 1) * 4);
+    bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 1, getSchema(), _index * 4, (_index + 1) * 4);
     return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
@@ -147,7 +184,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.pushToField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
+    StoreSwitch.pushToField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
   }
 
   /** Push an element to x (using the specified store) */
@@ -155,7 +192,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.pushToField(_tableId, _keyTuple, 0, abi.encodePacked((_element)));
+    _store.pushToField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
   }
 
   /** Pop an element from x */
@@ -163,7 +200,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.popFromField(_tableId, _keyTuple, 0, 4);
+    StoreSwitch.popFromField(_tableId, _keyTuple, 1, 4);
   }
 
   /** Pop an element from x (using the specified store) */
@@ -171,7 +208,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.popFromField(_tableId, _keyTuple, 0, 4);
+    _store.popFromField(_tableId, _keyTuple, 1, 4);
   }
 
   /** Update an element of x at `_index` */
@@ -179,7 +216,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.updateInField(_tableId, _keyTuple, 0, _index * 4, abi.encodePacked((_element)));
+    StoreSwitch.updateInField(_tableId, _keyTuple, 1, _index * 4, abi.encodePacked((_element)));
   }
 
   /** Update an element of x (using the specified store) at `_index` */
@@ -187,7 +224,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.updateInField(_tableId, _keyTuple, 0, _index * 4, abi.encodePacked((_element)));
+    _store.updateInField(_tableId, _keyTuple, 1, _index * 4, abi.encodePacked((_element)));
   }
 
   /** Get y */
@@ -195,7 +232,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1);
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_int32());
   }
 
@@ -204,7 +241,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = _store.getField(_tableId, _keyTuple, 1);
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 2);
     return (SliceLib.getSubslice(_blob, 0, _blob.length).decodeArray_int32());
   }
 
@@ -213,7 +250,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.setField(_tableId, _keyTuple, 1, EncodeArray.encode((y)));
+    StoreSwitch.setField(_tableId, _keyTuple, 2, EncodeArray.encode((y)));
   }
 
   /** Set y (using the specified store) */
@@ -221,7 +258,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.setField(_tableId, _keyTuple, 1, EncodeArray.encode((y)));
+    _store.setField(_tableId, _keyTuple, 2, EncodeArray.encode((y)));
   }
 
   /** Get the length of y */
@@ -229,7 +266,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 1, getSchema());
+    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 2, getSchema());
     return _byteLength / 4;
   }
 
@@ -238,7 +275,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 1, getSchema());
+    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 2, getSchema());
     return _byteLength / 4;
   }
 
@@ -247,7 +284,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = StoreSwitch.getFieldSlice(_tableId, _keyTuple, 1, getSchema(), _index * 4, (_index + 1) * 4);
+    bytes memory _blob = StoreSwitch.getFieldSlice(_tableId, _keyTuple, 2, getSchema(), _index * 4, (_index + 1) * 4);
     return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
@@ -256,7 +293,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 1, getSchema(), _index * 4, (_index + 1) * 4);
+    bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 2, getSchema(), _index * 4, (_index + 1) * 4);
     return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
@@ -265,7 +302,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.pushToField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
+    StoreSwitch.pushToField(_tableId, _keyTuple, 2, abi.encodePacked((_element)));
   }
 
   /** Push an element to y (using the specified store) */
@@ -273,7 +310,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.pushToField(_tableId, _keyTuple, 1, abi.encodePacked((_element)));
+    _store.pushToField(_tableId, _keyTuple, 2, abi.encodePacked((_element)));
   }
 
   /** Pop an element from y */
@@ -281,7 +318,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.popFromField(_tableId, _keyTuple, 1, 4);
+    StoreSwitch.popFromField(_tableId, _keyTuple, 2, 4);
   }
 
   /** Pop an element from y (using the specified store) */
@@ -289,7 +326,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.popFromField(_tableId, _keyTuple, 1, 4);
+    _store.popFromField(_tableId, _keyTuple, 2, 4);
   }
 
   /** Update an element of y at `_index` */
@@ -297,7 +334,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    StoreSwitch.updateInField(_tableId, _keyTuple, 1, _index * 4, abi.encodePacked((_element)));
+    StoreSwitch.updateInField(_tableId, _keyTuple, 2, _index * 4, abi.encodePacked((_element)));
   }
 
   /** Update an element of y (using the specified store) at `_index` */
@@ -305,7 +342,7 @@ library Player {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
 
-    _store.updateInField(_tableId, _keyTuple, 1, _index * 4, abi.encodePacked((_element)));
+    _store.updateInField(_tableId, _keyTuple, 2, _index * 4, abi.encodePacked((_element)));
   }
 
   /** Get the full data */
@@ -327,8 +364,8 @@ library Player {
   }
 
   /** Set the full data using individual values */
-  function set(bytes32 key, int32[] memory x, int32[] memory y) internal {
-    bytes memory _data = encode(x, y);
+  function set(bytes32 key, uint256 last, int32[] memory x, int32[] memory y) internal {
+    bytes memory _data = encode(last, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -337,8 +374,8 @@ library Player {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, bytes32 key, int32[] memory x, int32[] memory y) internal {
-    bytes memory _data = encode(x, y);
+  function set(IStore _store, bytes32 key, uint256 last, int32[] memory x, int32[] memory y) internal {
+    bytes memory _data = encode(last, x, y);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32((key));
@@ -348,24 +385,26 @@ library Player {
 
   /** Set the full data using the data struct */
   function set(bytes32 key, PlayerData memory _table) internal {
-    set(key, _table.x, _table.y);
+    set(key, _table.last, _table.x, _table.y);
   }
 
   /** Set the full data using the data struct (using the specified store) */
   function set(IStore _store, bytes32 key, PlayerData memory _table) internal {
-    set(_store, key, _table.x, _table.y);
+    set(_store, key, _table.last, _table.x, _table.y);
   }
 
   /** Decode the tightly packed blob using this table's schema */
   function decode(bytes memory _blob) internal view returns (PlayerData memory _table) {
-    // 0 is the total byte length of static data
-    PackedCounter _encodedLengths = PackedCounter.wrap(Bytes.slice32(_blob, 0));
+    // 32 is the total byte length of static data
+    PackedCounter _encodedLengths = PackedCounter.wrap(Bytes.slice32(_blob, 32));
+
+    _table.last = (uint256(Bytes.slice32(_blob, 0)));
 
     // Store trims the blob if dynamic fields are all empty
-    if (_blob.length > 0) {
+    if (_blob.length > 32) {
       uint256 _start;
       // skip static data length + dynamic lengths word
-      uint256 _end = 32;
+      uint256 _end = 64;
 
       _start = _end;
       _end += _encodedLengths.atIndex(0);
@@ -378,13 +417,13 @@ library Player {
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(int32[] memory x, int32[] memory y) internal view returns (bytes memory) {
+  function encode(uint256 last, int32[] memory x, int32[] memory y) internal view returns (bytes memory) {
     uint40[] memory _counters = new uint40[](2);
     _counters[0] = uint40(x.length * 4);
     _counters[1] = uint40(y.length * 4);
     PackedCounter _encodedLengths = PackedCounterLib.pack(_counters);
 
-    return abi.encodePacked(_encodedLengths.unwrap(), EncodeArray.encode((x)), EncodeArray.encode((y)));
+    return abi.encodePacked(last, _encodedLengths.unwrap(), EncodeArray.encode((x)), EncodeArray.encode((y)));
   }
 
   /** Encode keys as a bytes32 array using this table's schema */
