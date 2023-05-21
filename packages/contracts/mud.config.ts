@@ -15,10 +15,10 @@ export default mudConfig({
       keySchema: {},
       schema: "uint32",
     },
-    Position: {
+    Player: {
       schema:{
-        x: "int32",
-        y: "int32",
+        x: "int32[]",
+        y: "int32[]",
       },
     },
     Stone: {
@@ -39,7 +39,13 @@ export default mudConfig({
     {
       name: "KeysWithValueModule",
       root: true,
-      args: [resolveTableId("Position")]
+      args: [resolveTableId("Player")]
+    },
+    {
+      name: "KeysWithValueModule",
+      root: true,
+      args: [resolveTableId("Stone")]
     }
+
   ]
 });

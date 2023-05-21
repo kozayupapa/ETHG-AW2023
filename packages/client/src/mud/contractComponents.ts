@@ -20,13 +20,13 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
-    Position: (() => {
-      const tableId = new TableId("", "Position");
+    Player: (() => {
+      const tableId = new TableId("", "Player");
       return defineComponent(
         world,
         {
-          x: RecsType.Number,
-          y: RecsType.Number,
+          x: RecsType.NumberArray,
+          y: RecsType.NumberArray,
         },
         {
           metadata: {
