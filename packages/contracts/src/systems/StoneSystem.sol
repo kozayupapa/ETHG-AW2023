@@ -27,52 +27,68 @@ contract StoneSystem is System {
 
     StoneData memory existing = Stone.get(x,y);
     require(existing.owner == address(0) ,"stone pos occupied");
-
-    //bytes32[] memory playersAtPos = getKeysWithValue(StoneTableId, Stone.encode(x,y));
-    //require(playersAtPos.length == 0, "spawn location occupied");
     Stone.set(x, y,x,y,token,_msgSender(),color);
-    checkStone(x,y,token,color);
-    playerAdd(x,y);
-
-    /*
-    for(int32 i=0;i<100;i++){
-      StoneData memory existing = Stone.get(x-i,y);
-      if(existing.owner != address(0)){
-        changeStone(x-i,y,token,color);
-      }
-    }
-
+    judgeStones(x,y,token,color);
+    addPlayerStone(x,y);
   }
-  function changeStone(int32 x, int32 y, address  token, string memory color) private {
-    */
-  }
-  function checkStone(int32 x, int32 y, address  token, string memory color) private {
+
+  //Othello logic. check between new stone and owned stone   
+  function judgeStones(int32 x, int32 y, address  token, string memory color) private {
     bytes32 player = bytes32(uint256(uint160(_msgSender())));
+
     PlayerData memory _player = Player.get(player);
+    console.log(_player.x.length);
+    //for existing player's stones
     for(uint i=0; i < _player.x.length; i++){
-      if(x==_player.x[i]){
-        for(int32 j=1; j < (_player.y[i] - y); j++){
-          Stone.set(x,y+j,x,y+j,token,_msgSender(),color);
-        }
+      judgeStone(x, y, _player.x[i], _player.y[i],token, color);
+    }
+  }
+  //currently suppot only stone which is on same x or y stone 
+  // not supported diagonal judgement
+  function judgeStone(int32 x, int32 y, int32 nx, int32 ny, address  token, string memory color) private {
+    address myaddress = _msgSender();
+    if(x==nx){
+      int32 ydiff = ny-y;
+      int32 dir = 1;
+      if(ny<y){
+        ydiff *= -1;
+        dir = -1;
       }
-      if(y==_player.y[i]){
-        for(int32 j=1; j < (_player.x[i] - x); j++){
-          Stone.set(x+j,y,x+j,y,token,_msgSender(),color);
-        }
+      for(int32 j=1; j < ydiff; j++){
+        StoneData memory tstone = Stone.get(x,y+j*dir);
+        // if target has empty spcae or my stone,  skip 
+        if(tstone.owner == address(0) || tstone.owner == myaddress ) return;
+      }
+      for(int32 j=1; j < ydiff; j++){
+        changeStone(x,y+j*dir,token,color);
+      }
+    }
+    if(y==ny){
+      int32 xdiff = nx-x;
+      int32 dir = 1;
+      if(nx<x){
+        xdiff *= -1;
+        dir = -1;
+      }
+      for(int32 j=1; j < xdiff; j++){
+        StoneData memory tstone = Stone.get(x+j*dir,y);
+        // if target has empty spcae or my stone,  skip 
+        if(tstone.owner == address(0) || tstone.owner == myaddress ) return;
+      }
+      for(int32 j=1; j < xdiff; j++){
+        changeStone(x+j*dir,y,token,color);
       }
     }
   }
-  function playerAdd(int32 x, int32 y) private {
-    //require(x != 0 || y != 0, "cannot spawn at 0");
-    //address player = _msgSender();
-    //bytes32(uint256(uint160(addr))))
+
+  function changeStone(int32 x, int32 y, address  token, string memory color) private {
+    Stone.set(x,y,x,y,token,_msgSender(),color);
+    addPlayerStone(x,y);
+  }
+
+  function addPlayerStone(int32 x, int32 y) private {
     bytes32 player = bytes32(uint256(uint160(_msgSender())));
-
     PlayerData memory existingPosition = Player.get(player);
-    //require(existingPosition.x == 0 && existingPosition.y == 0,"initial pos should be 0");
-
-    //bytes32[] memory playersAtPos = getKeysWithValue(PositionTableId, Position.encode(x,y));
-    //require(playersAtPos.length == 0, "spawn location occupied");
     Player.pushX(player, x);
     Player.pushY(player, y);    
   }

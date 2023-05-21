@@ -4,7 +4,7 @@ import { pixelCoordToTileCoord, tileCoordToPixelCoord } from "@latticexyz/phaser
 import { Animations, Direction, TILE_HEIGHT, TILE_WIDTH } from "../constants";
 import { getAddress } from "ethers/src.ts/utils";
 
-
+const mycolor = Math.ceil(Math.random() * 0xffffff);
 export const createStoneSystem = (layer: PhaserLayer) => {
   const {
     world,
@@ -29,7 +29,7 @@ export const createStoneSystem = (layer: PhaserLayer) => {
     const position = pixelCoordToTileCoord({x,y},TILE_WIDTH,TILE_HEIGHT);
     if(position.x === 0 && position.y === 0) return;
     console.log("spawn to",position.x,position.y)
-    spawnStone(position.x,position.y,getAddress("0x8ba1f109551bd432803012645ac136ddd64dba72"),"0xff0000");
+    spawnStone(position.x,position.y,getAddress("0x8ba1f109551bd432803012645ac136ddd64dba72"),mycolor.toString());
 
   });
 
@@ -50,19 +50,16 @@ export const createStoneSystem = (layer: PhaserLayer) => {
 
   defineEnterSystem(world,[Has(Stone)],({entity})=>{
     //const playerObj = objectPool.get(entity,"Sprite");
-    const playerObj = objectPool.get(entity,"Rectangle");
-    playerObj.setComponent({
+    const stone = getComponentValueStrict(Stone,entity);
+    console.log({stone});
+    const stoneObj = objectPool.get(entity,"Rectangle");
+    stoneObj.setComponent({
       id:'animation',
       once: (obj)=>{
         obj.setSize(20,20);
-        obj.setFillStyle(0xff0000);
-        //obj.play(Animations.Golem);
+        obj.setFillStyle(Number(stone.color));
       }
-      /*once: (sprite)=>{
-        sprite.play(Animations.go)
-      }*/
-
-    })
+    });
 
   });
   /*
@@ -72,9 +69,9 @@ export const createStoneSystem = (layer: PhaserLayer) => {
   */
 
   defineSystem(world,[Has(Stone)],({entity})=>{
-    console.log({entity})
-    const pos = getComponentValueStrict(Stone,entity);
-    const pixelPosition = tileCoordToPixelCoord({x:pos.x, y:pos.y},TILE_WIDTH,TILE_HEIGHT);
+    const stone = getComponentValueStrict(Stone,entity);
+    console.log({stone});    
+    const pixelPosition = tileCoordToPixelCoord({x:stone.x, y:stone.y},TILE_WIDTH,TILE_HEIGHT);
     //const playerObj = objectPool.get(entity, "Sprite")
     const stoneObj = objectPool.get(entity, "Rectangle")
     stoneObj.setComponent({
@@ -82,6 +79,13 @@ export const createStoneSystem = (layer: PhaserLayer) => {
       once: (obj)=>{
         obj.setPosition(pixelPosition.x,pixelPosition.y);
       }    
-    });    
+    });
+    stoneObj.setComponent({
+      id:'animation',
+      once: (obj)=>{
+        obj.setSize(20,20);
+        obj.setFillStyle(Number(stone.color));
+      }
+    });
   });    
 };
