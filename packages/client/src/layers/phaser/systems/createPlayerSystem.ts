@@ -1,4 +1,4 @@
-import { Has, defineEnterSystem, defineSystem, getComponentValueStrict } from "@latticexyz/recs";
+import { Has, defineEnterSystem, defineExitSystem, defineSystem, getComponentValueStrict } from "@latticexyz/recs";
 import { PhaserLayer } from "../createPhaserLayer";
 import { pixelCoordToTileCoord, tileCoordToPixelCoord } from "@latticexyz/phaserx";
 import { Animations, Direction, TILE_HEIGHT, TILE_WIDTH } from "../constants";
@@ -61,6 +61,9 @@ export const createPlayerSystem = (layer: PhaserLayer) => {
 
     })
 
+  });
+  defineExitSystem(world,[Has(Position)],({entity})=>{
+    objectPool.remove(entity);  
   });
 
   defineSystem(world,[Has(Position)],({entity})=>{

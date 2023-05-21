@@ -17,9 +17,10 @@ import {getKeysWithValue} from "@latticexyz/world/src/modules/keyswithvalue/getK
 contract PlayerSystem is System {
   function spawn(int32 x, int32 y) public {
     require(x != 0 || y != 0, "cannot spawn at 0");
-    address player = _msgSender();
-    console.log(player);
-    //bytes32 player = bytes32(uint256(uint160(_msgSender())) << 96);
+    //address player = _msgSender();
+    //bytes32(uint256(uint160(addr))))
+    bytes32 player = bytes32(uint256(uint160(_msgSender())));
+
     PositionData memory existingPosition = Position.get(player);
     require(existingPosition.x == 0 && existingPosition.y == 0,"initial pos should be 0");
 
@@ -30,7 +31,8 @@ contract PlayerSystem is System {
   function move(Direction dir) public {
     require(dir != Direction.Unknown, "invalid direction");
 
-    address player = _msgSender();
+    //address player = _msgSender();
+    bytes32 player = bytes32(uint256(uint160(_msgSender())));
     PositionData memory existingPosition = Position.get(player);
     require(existingPosition.x != 0 || existingPosition.y != 0,"pos should be setted");
     int32 x = existingPosition.x;
@@ -52,5 +54,6 @@ contract PlayerSystem is System {
 
     Position.set(player,x,y);
 
+    //can get other playe by playesAtPos([0])
   }
 }

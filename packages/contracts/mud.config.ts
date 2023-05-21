@@ -16,9 +16,6 @@ export default mudConfig({
       schema: "uint32",
     },
     Position: {
-      keySchema: {
-        player:"address"
-      },
       schema:{
         x: "int32",
         y: "int32",
