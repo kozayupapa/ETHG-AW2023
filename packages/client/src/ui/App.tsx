@@ -15,9 +15,8 @@ export const App = () => {
 
   return (
     <div>
-      <PhaserLayer networkLayer={networkLayer} />
-
       <UIRoot />
+      <PhaserLayer networkLayer={networkLayer} />
     </div>
   );
 };
