@@ -53,6 +53,12 @@ export async function setupNetwork() {
   // Create a World contract instance
   const worldContract = IWorld__factory.connect(networkConfig.worldAddress, signerOrProvider);
 
+  // Register player entity
+  const address = result.network.connectedAddress.get();
+  const playerEntityId = address;
+  const playerEntity = playerEntityId ? world.registerEntity({ id: playerEntityId }) : undefined;
+  console.log(address,playerEntity);
+
   if (networkConfig.snapSync) {
     const currentBlockNumber = await provider.getBlockNumber();
     const tableRecords = await getSnapSyncRecords(
@@ -98,5 +104,6 @@ export async function setupNetwork() {
     worldContract,
     worldSend: bindFastTxExecute(worldContract),
     fastTxExecutor,
+    playerEntity,
   };
 }
