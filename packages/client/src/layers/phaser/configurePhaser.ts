@@ -5,7 +5,7 @@ import {
   defineMapConfig,
   defineCameraConfig,
 } from "@latticexyz/phaserx";
-import worldTileset from "../../../public/assets/tilesets/world.png";
+import worldTileset from "../../../public/assets/tile.png";
 import { TileAnimations, Tileset } from "../../artTypes/world";
 import { Sprites, Assets, Maps, Scenes, TILE_HEIGHT, TILE_WIDTH, Animations } from "./constants";
 
