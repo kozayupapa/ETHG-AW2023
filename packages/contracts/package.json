@@ -28,6 +28,8 @@
     "@latticexyz/std-contracts": "2.0.0-alpha.1.176+b2c06c9f",
     "@latticexyz/store": "2.0.0-alpha.1.176+b2c06c9f",
     "@latticexyz/world": "2.0.0-alpha.1.176+b2c06c9f",
+    "@openzeppelin/contracts": "^4.6.0",
+    "base64-sol": "^1.1.0",
     "ethers": "^5.7.2"
   },
   "devDependencies": {
