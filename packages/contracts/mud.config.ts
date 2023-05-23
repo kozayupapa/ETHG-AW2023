@@ -42,6 +42,7 @@ export default mudConfig({
       schema:{
         adr: "address",
         name: "string",
+        uri: "string",
       },
     }
   },

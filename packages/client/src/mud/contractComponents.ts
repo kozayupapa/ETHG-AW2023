@@ -63,6 +63,7 @@ export function defineContractComponents(world: World) {
         {
           adr: RecsType.String,
           name: RecsType.String,
+          uri: RecsType.String,
         },
         {
           metadata: {

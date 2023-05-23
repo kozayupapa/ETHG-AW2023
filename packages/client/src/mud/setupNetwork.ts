@@ -8,6 +8,7 @@ import { JsonRpcProvider } from "@ethersproject/providers";
 import { IWorld__factory } from "contracts/types/ethers-contracts/factories/IWorld__factory";
 import { getTableIds } from "@latticexyz/utils";
 import storeConfig from "contracts/mud.config";
+import ERC721 from  "./ERC721.sol/ERC721.abi.json";
 
 export type SetupNetworkResult = Awaited<ReturnType<typeof setupNetwork>>;
 
@@ -99,11 +100,19 @@ export async function setupNetwork() {
     };
   }
 
+  const mint = async (address :string) => {
+    console.log("mint to ",address);
+    const tokenContract = new Contract(address, ERC721, signerOrProvider);
+    const tokenTx = bindFastTxExecute(tokenContract);
+    //tokenTx("_safeMint");
+  }
+
   return {
     ...result,
     worldContract,
     worldSend: bindFastTxExecute(worldContract),
     fastTxExecutor,
     playerEntity,
+    mint,
   };
 }

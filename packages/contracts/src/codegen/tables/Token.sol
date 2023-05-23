@@ -23,14 +23,16 @@ bytes32 constant TokenTableId = _tableId;
 struct TokenData {
   address adr;
   string name;
+  string uri;
 }
 
 library Token {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](2);
+    SchemaType[] memory _schema = new SchemaType[](3);
     _schema[0] = SchemaType.ADDRESS;
     _schema[1] = SchemaType.STRING;
+    _schema[2] = SchemaType.STRING;
 
     return SchemaLib.encode(_schema);
   }
@@ -44,9 +46,10 @@ library Token {
 
   /** Get the table's metadata */
   function getMetadata() internal pure returns (string memory, string[] memory) {
-    string[] memory _fieldNames = new string[](2);
+    string[] memory _fieldNames = new string[](3);
     _fieldNames[0] = "adr";
     _fieldNames[1] = "name";
+    _fieldNames[2] = "uri";
     return ("Token", _fieldNames);
   }
 
@@ -224,6 +227,124 @@ library Token {
     _store.updateInField(_tableId, _keyTuple, 1, _index * 1, bytes((_slice)));
   }
 
+  /** Get uri */
+  function getUri(address ka) internal view returns (string memory uri) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2);
+    return (string(_blob));
+  }
+
+  /** Get uri (using the specified store) */
+  function getUri(IStore _store, address ka) internal view returns (string memory uri) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 2);
+    return (string(_blob));
+  }
+
+  /** Set uri */
+  function setUri(address ka, string memory uri) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 2, bytes((uri)));
+  }
+
+  /** Set uri (using the specified store) */
+  function setUri(IStore _store, address ka, string memory uri) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    _store.setField(_tableId, _keyTuple, 2, bytes((uri)));
+  }
+
+  /** Get the length of uri */
+  function lengthUri(address ka) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    uint256 _byteLength = StoreSwitch.getFieldLength(_tableId, _keyTuple, 2, getSchema());
+    return _byteLength / 1;
+  }
+
+  /** Get the length of uri (using the specified store) */
+  function lengthUri(IStore _store, address ka) internal view returns (uint256) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    uint256 _byteLength = _store.getFieldLength(_tableId, _keyTuple, 2, getSchema());
+    return _byteLength / 1;
+  }
+
+  /** Get an item of uri (unchecked, returns invalid data if index overflows) */
+  function getItemUri(address ka, uint256 _index) internal view returns (string memory) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    bytes memory _blob = StoreSwitch.getFieldSlice(_tableId, _keyTuple, 2, getSchema(), _index * 1, (_index + 1) * 1);
+    return (string(_blob));
+  }
+
+  /** Get an item of uri (using the specified store) (unchecked, returns invalid data if index overflows) */
+  function getItemUri(IStore _store, address ka, uint256 _index) internal view returns (string memory) {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    bytes memory _blob = _store.getFieldSlice(_tableId, _keyTuple, 2, getSchema(), _index * 1, (_index + 1) * 1);
+    return (string(_blob));
+  }
+
+  /** Push a slice to uri */
+  function pushUri(address ka, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    StoreSwitch.pushToField(_tableId, _keyTuple, 2, bytes((_slice)));
+  }
+
+  /** Push a slice to uri (using the specified store) */
+  function pushUri(IStore _store, address ka, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    _store.pushToField(_tableId, _keyTuple, 2, bytes((_slice)));
+  }
+
+  /** Pop a slice from uri */
+  function popUri(address ka) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    StoreSwitch.popFromField(_tableId, _keyTuple, 2, 1);
+  }
+
+  /** Pop a slice from uri (using the specified store) */
+  function popUri(IStore _store, address ka) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    _store.popFromField(_tableId, _keyTuple, 2, 1);
+  }
+
+  /** Update a slice of uri at `_index` */
+  function updateUri(address ka, uint256 _index, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    StoreSwitch.updateInField(_tableId, _keyTuple, 2, _index * 1, bytes((_slice)));
+  }
+
+  /** Update a slice of uri (using the specified store) at `_index` */
+  function updateUri(IStore _store, address ka, uint256 _index, string memory _slice) internal {
+    bytes32[] memory _keyTuple = new bytes32[](1);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+
+    _store.updateInField(_tableId, _keyTuple, 2, _index * 1, bytes((_slice)));
+  }
+
   /** Get the full data */
   function get(address ka) internal view returns (TokenData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](1);
@@ -243,8 +364,8 @@ library Token {
   }
 
   /** Set the full data using individual values */
-  function set(address ka, address adr, string memory name) internal {
-    bytes memory _data = encode(adr, name);
+  function set(address ka, address adr, string memory name, string memory uri) internal {
+    bytes memory _data = encode(adr, name, uri);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
@@ -253,8 +374,8 @@ library Token {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, address ka, address adr, string memory name) internal {
-    bytes memory _data = encode(adr, name);
+  function set(IStore _store, address ka, address adr, string memory name, string memory uri) internal {
+    bytes memory _data = encode(adr, name, uri);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
@@ -264,12 +385,12 @@ library Token {
 
   /** Set the full data using the data struct */
   function set(address ka, TokenData memory _table) internal {
-    set(ka, _table.adr, _table.name);
+    set(ka, _table.adr, _table.name, _table.uri);
   }
 
   /** Set the full data using the data struct (using the specified store) */
   function set(IStore _store, address ka, TokenData memory _table) internal {
-    set(_store, ka, _table.adr, _table.name);
+    set(_store, ka, _table.adr, _table.name, _table.uri);
   }
 
   /** Decode the tightly packed blob using this table's schema */
@@ -288,16 +409,21 @@ library Token {
       _start = _end;
       _end += _encodedLengths.atIndex(0);
       _table.name = (string(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
+
+      _start = _end;
+      _end += _encodedLengths.atIndex(1);
+      _table.uri = (string(SliceLib.getSubslice(_blob, _start, _end).toBytes()));
     }
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(address adr, string memory name) internal view returns (bytes memory) {
-    uint40[] memory _counters = new uint40[](1);
+  function encode(address adr, string memory name, string memory uri) internal view returns (bytes memory) {
+    uint40[] memory _counters = new uint40[](2);
     _counters[0] = uint40(bytes(name).length);
+    _counters[1] = uint40(bytes(uri).length);
     PackedCounter _encodedLengths = PackedCounterLib.pack(_counters);
 
-    return abi.encodePacked(adr, _encodedLengths.unwrap(), bytes((name)));
+    return abi.encodePacked(adr, _encodedLengths.unwrap(), bytes((name)), bytes((uri)));
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

@@ -14,10 +14,10 @@ import {getKeysWithValue} from "@latticexyz/world/src/modules/keyswithvalue/getK
 //import {addressToEntity} from 
 
 contract TokenSystem is System {
-  function setToken(address adr, string memory name) public {
+  function setToken(address adr, string memory name,  string memory uri) public {
     require(adr != address(0), "cannot set address 0");
     TokenData memory existing = Token.get(adr);
     require(existing.adr == address(0) ,"token already set");
-    Token.set(adr,adr,name);
+    Token.set(adr,adr,name,uri);
   }
 }
