@@ -35,6 +35,15 @@ export default mudConfig({
         color: "string",
       },
     },
+    Token: {
+      keySchema:{
+        ka: "address",
+      },
+      schema:{
+        adr: "address",
+        name: "string",
+      },
+    }
   },
   modules:[
     {

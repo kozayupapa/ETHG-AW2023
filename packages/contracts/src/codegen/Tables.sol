@@ -6,3 +6,4 @@ pragma solidity >=0.8.0;
 import { Counter, CounterTableId } from "./tables/Counter.sol";
 import { Player, PlayerData, PlayerTableId } from "./tables/Player.sol";
 import { Stone, StoneData, StoneTableId } from "./tables/Stone.sol";
+import { Token, TokenData, TokenTableId } from "./tables/Token.sol";

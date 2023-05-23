@@ -14,6 +14,7 @@ contract PostDeploy is Script {
 
     // Start broadcasting transactions from the deployer account
     vm.startBroadcast(deployerPrivateKey);
+    IWorld world = IWorld(worldAddress);
     uint256 id;
     address adr1 = deployCode("MockTokenWhite.sol");
     console.log("Deployed MockWhite: ", adr1);
@@ -24,9 +25,11 @@ contract PostDeploy is Script {
     address adr2 = deployCode("MockTokenBlack.sol");
     console.log("Deployed MockBlack: ", adr2);
     MockTokenBlack t2 = MockTokenBlack(adr2);
-    id = t1.mint("ipfs://metadata_url");
+    id = t2.mint("ipfs://metadata_url");
     console.log("owner of id:",id , " addr:",t2.ownerOf(id));
 
+    world.setToken(adr1,t1.name());
+    world.setToken(adr2,t2.name());
 
     vm.stopBroadcast();
   }
