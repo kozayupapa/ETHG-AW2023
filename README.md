@@ -1,5 +1,5 @@
 # demo:
-https://646e3aaeac2b52005bb728d0--verdant-paprenjak-210163.netlify.app/?chainId=4242
+https://646e594830dd6c09465cc551--melodic-torrone-9fc95a.netlify.app/?chainId=4242
 
 # KeyPoint
 ## main game loginc on contract
