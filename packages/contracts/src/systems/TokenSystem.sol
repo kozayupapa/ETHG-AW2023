@@ -11,6 +11,7 @@ import {
   TokenCountData,
   TokenCountTableId,
   UserToken,
+  UserTokenData,
   UserTokenTableId
 } from "../codegen/Tables.sol";
 
@@ -31,6 +32,7 @@ contract TokenSystem is System {
     existing.total++;
     existing.vacant++;
     TokenCount.set(adr,existing.total,existing.used,existing.vacant);
-    UserToken.set(adr,_msgSender(),adr,_msgSender());
+    UserTokenData memory user = UserToken.get(adr,_msgSender());
+    UserToken.set(adr,_msgSender(),adr,_msgSender(),user.count+1);
   }
 }

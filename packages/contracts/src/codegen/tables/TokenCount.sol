@@ -21,18 +21,18 @@ bytes32 constant _tableId = bytes32(abi.encodePacked(bytes16(""), bytes16("Token
 bytes32 constant TokenCountTableId = _tableId;
 
 struct TokenCountData {
-  uint256 total;
-  uint256 used;
-  uint256 vacant;
+  int32 total;
+  int32 used;
+  int32 vacant;
 }
 
 library TokenCount {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
     SchemaType[] memory _schema = new SchemaType[](3);
-    _schema[0] = SchemaType.UINT256;
-    _schema[1] = SchemaType.UINT256;
-    _schema[2] = SchemaType.UINT256;
+    _schema[0] = SchemaType.INT32;
+    _schema[1] = SchemaType.INT32;
+    _schema[2] = SchemaType.INT32;
 
     return SchemaLib.encode(_schema);
   }
@@ -76,25 +76,25 @@ library TokenCount {
   }
 
   /** Get total */
-  function getTotal(address ka) internal view returns (uint256 total) {
+  function getTotal(address ka) internal view returns (int32 total) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 0);
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Get total (using the specified store) */
-  function getTotal(IStore _store, address ka) internal view returns (uint256 total) {
+  function getTotal(IStore _store, address ka) internal view returns (int32 total) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 0);
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Set total */
-  function setTotal(address ka, uint256 total) internal {
+  function setTotal(address ka, int32 total) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
@@ -102,7 +102,7 @@ library TokenCount {
   }
 
   /** Set total (using the specified store) */
-  function setTotal(IStore _store, address ka, uint256 total) internal {
+  function setTotal(IStore _store, address ka, int32 total) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
@@ -110,25 +110,25 @@ library TokenCount {
   }
 
   /** Get used */
-  function getUsed(address ka) internal view returns (uint256 used) {
+  function getUsed(address ka) internal view returns (int32 used) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 1);
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Get used (using the specified store) */
-  function getUsed(IStore _store, address ka) internal view returns (uint256 used) {
+  function getUsed(IStore _store, address ka) internal view returns (int32 used) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 1);
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Set used */
-  function setUsed(address ka, uint256 used) internal {
+  function setUsed(address ka, int32 used) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
@@ -136,7 +136,7 @@ library TokenCount {
   }
 
   /** Set used (using the specified store) */
-  function setUsed(IStore _store, address ka, uint256 used) internal {
+  function setUsed(IStore _store, address ka, int32 used) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
@@ -144,25 +144,25 @@ library TokenCount {
   }
 
   /** Get vacant */
-  function getVacant(address ka) internal view returns (uint256 vacant) {
+  function getVacant(address ka) internal view returns (int32 vacant) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
     bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2);
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Get vacant (using the specified store) */
-  function getVacant(IStore _store, address ka) internal view returns (uint256 vacant) {
+  function getVacant(IStore _store, address ka) internal view returns (int32 vacant) {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
     bytes memory _blob = _store.getField(_tableId, _keyTuple, 2);
-    return (uint256(Bytes.slice32(_blob, 0)));
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
   }
 
   /** Set vacant */
-  function setVacant(address ka, uint256 vacant) internal {
+  function setVacant(address ka, int32 vacant) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
@@ -170,7 +170,7 @@ library TokenCount {
   }
 
   /** Set vacant (using the specified store) */
-  function setVacant(IStore _store, address ka, uint256 vacant) internal {
+  function setVacant(IStore _store, address ka, int32 vacant) internal {
     bytes32[] memory _keyTuple = new bytes32[](1);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
 
@@ -196,7 +196,7 @@ library TokenCount {
   }
 
   /** Set the full data using individual values */
-  function set(address ka, uint256 total, uint256 used, uint256 vacant) internal {
+  function set(address ka, int32 total, int32 used, int32 vacant) internal {
     bytes memory _data = encode(total, used, vacant);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
@@ -206,7 +206,7 @@ library TokenCount {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, address ka, uint256 total, uint256 used, uint256 vacant) internal {
+  function set(IStore _store, address ka, int32 total, int32 used, int32 vacant) internal {
     bytes memory _data = encode(total, used, vacant);
 
     bytes32[] memory _keyTuple = new bytes32[](1);
@@ -227,15 +227,15 @@ library TokenCount {
 
   /** Decode the tightly packed blob using this table's schema */
   function decode(bytes memory _blob) internal pure returns (TokenCountData memory _table) {
-    _table.total = (uint256(Bytes.slice32(_blob, 0)));
+    _table.total = (int32(uint32(Bytes.slice4(_blob, 0))));
 
-    _table.used = (uint256(Bytes.slice32(_blob, 32)));
+    _table.used = (int32(uint32(Bytes.slice4(_blob, 4))));
 
-    _table.vacant = (uint256(Bytes.slice32(_blob, 64)));
+    _table.vacant = (int32(uint32(Bytes.slice4(_blob, 8))));
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(uint256 total, uint256 used, uint256 vacant) internal view returns (bytes memory) {
+  function encode(int32 total, int32 used, int32 vacant) internal view returns (bytes memory) {
     return abi.encodePacked(total, used, vacant);
   }
 

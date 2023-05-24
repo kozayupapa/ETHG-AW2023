@@ -23,14 +23,16 @@ bytes32 constant UserTokenTableId = _tableId;
 struct UserTokenData {
   address token;
   address owner;
+  int32 count;
 }
 
 library UserToken {
   /** Get the table's schema */
   function getSchema() internal pure returns (Schema) {
-    SchemaType[] memory _schema = new SchemaType[](2);
+    SchemaType[] memory _schema = new SchemaType[](3);
     _schema[0] = SchemaType.ADDRESS;
     _schema[1] = SchemaType.ADDRESS;
+    _schema[2] = SchemaType.INT32;
 
     return SchemaLib.encode(_schema);
   }
@@ -45,9 +47,10 @@ library UserToken {
 
   /** Get the table's metadata */
   function getMetadata() internal pure returns (string memory, string[] memory) {
-    string[] memory _fieldNames = new string[](2);
+    string[] memory _fieldNames = new string[](3);
     _fieldNames[0] = "token";
     _fieldNames[1] = "owner";
+    _fieldNames[2] = "count";
     return ("UserToken", _fieldNames);
   }
 
@@ -149,6 +152,44 @@ library UserToken {
     _store.setField(_tableId, _keyTuple, 1, abi.encodePacked((owner)));
   }
 
+  /** Get count */
+  function getCount(address ka, address ko) internal view returns (int32 count) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+    _keyTuple[1] = bytes32(uint256(uint160((ko))));
+
+    bytes memory _blob = StoreSwitch.getField(_tableId, _keyTuple, 2);
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
+  }
+
+  /** Get count (using the specified store) */
+  function getCount(IStore _store, address ka, address ko) internal view returns (int32 count) {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+    _keyTuple[1] = bytes32(uint256(uint160((ko))));
+
+    bytes memory _blob = _store.getField(_tableId, _keyTuple, 2);
+    return (int32(uint32(Bytes.slice4(_blob, 0))));
+  }
+
+  /** Set count */
+  function setCount(address ka, address ko, int32 count) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+    _keyTuple[1] = bytes32(uint256(uint160((ko))));
+
+    StoreSwitch.setField(_tableId, _keyTuple, 2, abi.encodePacked((count)));
+  }
+
+  /** Set count (using the specified store) */
+  function setCount(IStore _store, address ka, address ko, int32 count) internal {
+    bytes32[] memory _keyTuple = new bytes32[](2);
+    _keyTuple[0] = bytes32(uint256(uint160((ka))));
+    _keyTuple[1] = bytes32(uint256(uint160((ko))));
+
+    _store.setField(_tableId, _keyTuple, 2, abi.encodePacked((count)));
+  }
+
   /** Get the full data */
   function get(address ka, address ko) internal view returns (UserTokenData memory _table) {
     bytes32[] memory _keyTuple = new bytes32[](2);
@@ -170,8 +211,8 @@ library UserToken {
   }
 
   /** Set the full data using individual values */
-  function set(address ka, address ko, address token, address owner) internal {
-    bytes memory _data = encode(token, owner);
+  function set(address ka, address ko, address token, address owner, int32 count) internal {
+    bytes memory _data = encode(token, owner, count);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
@@ -181,8 +222,8 @@ library UserToken {
   }
 
   /** Set the full data using individual values (using the specified store) */
-  function set(IStore _store, address ka, address ko, address token, address owner) internal {
-    bytes memory _data = encode(token, owner);
+  function set(IStore _store, address ka, address ko, address token, address owner, int32 count) internal {
+    bytes memory _data = encode(token, owner, count);
 
     bytes32[] memory _keyTuple = new bytes32[](2);
     _keyTuple[0] = bytes32(uint256(uint160((ka))));
@@ -193,12 +234,12 @@ library UserToken {
 
   /** Set the full data using the data struct */
   function set(address ka, address ko, UserTokenData memory _table) internal {
-    set(ka, ko, _table.token, _table.owner);
+    set(ka, ko, _table.token, _table.owner, _table.count);
   }
 
   /** Set the full data using the data struct (using the specified store) */
   function set(IStore _store, address ka, address ko, UserTokenData memory _table) internal {
-    set(_store, ka, ko, _table.token, _table.owner);
+    set(_store, ka, ko, _table.token, _table.owner, _table.count);
   }
 
   /** Decode the tightly packed blob using this table's schema */
@@ -206,11 +247,13 @@ library UserToken {
     _table.token = (address(Bytes.slice20(_blob, 0)));
 
     _table.owner = (address(Bytes.slice20(_blob, 20)));
+
+    _table.count = (int32(uint32(Bytes.slice4(_blob, 40))));
   }
 
   /** Tightly pack full data using this table's schema */
-  function encode(address token, address owner) internal view returns (bytes memory) {
-    return abi.encodePacked(token, owner);
+  function encode(address token, address owner, int32 count) internal view returns (bytes memory) {
+    return abi.encodePacked(token, owner, count);
   }
 
   /** Encode keys as a bytes32 array using this table's schema */

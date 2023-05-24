@@ -109,6 +109,7 @@ export function defineContractComponents(world: World) {
         {
           token: RecsType.String,
           owner: RecsType.String,
+          count: RecsType.Number,
         },
         {
           metadata: {
@@ -140,9 +141,9 @@ export function defineContractComponents(world: World) {
       return defineComponent(
         world,
         {
-          total: RecsType.BigInt,
-          used: RecsType.BigInt,
-          vacant: RecsType.BigInt,
+          total: RecsType.Number,
+          used: RecsType.Number,
+          vacant: RecsType.Number,
         },
         {
           metadata: {

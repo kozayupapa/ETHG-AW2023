@@ -70,7 +70,8 @@ export default mudConfig({
       },
       schema:{
         token: "address",
-        owner: "address",        
+        owner: "address",
+        count: "int32",
       },
     },
     Token: {
@@ -88,9 +89,9 @@ export default mudConfig({
         ka: "address",
       },
       schema:{
-        total: "uint256",
-        used: "uint256",
-        vacant: "uint256",
+        total: "int32",
+        used: "int32",
+        vacant: "int32",
       },
     }
   },
