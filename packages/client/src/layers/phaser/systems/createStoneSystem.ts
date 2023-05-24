@@ -32,10 +32,12 @@ export const createStoneSystem = (layer: PhaserLayer) => {
   
     const euts = getComponentEntities(UserToken);
     let tokenCount=0; 
+    let token;
     for(const entity of euts){
       const ut = getComponentValue(UserToken,entity);
       if(ut?.owner == playerEntity){
         tokenCount += ut?.count ? ut.count : 0;
+        token = ut?.token;
       }
     }
     console.log(userStoneCount, tokenCount);
@@ -50,7 +52,7 @@ export const createStoneSystem = (layer: PhaserLayer) => {
     const position = pixelCoordToTileCoord({x,y},TILE_WIDTH,TILE_HEIGHT);
     if(position.x === 0 && position.y === 0) return;
     console.log("spawn to",position.x,position.y)
-    spawnStone(position.x,position.y,getAddress("0x8ba1f109551bd432803012645ac136ddd64dba72"),mycolor.toString());
+    spawnStone(position.x,position.y,getAddress(token as string),mycolor.toString());
 
   });
 

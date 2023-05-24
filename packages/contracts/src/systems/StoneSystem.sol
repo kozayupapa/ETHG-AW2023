@@ -12,6 +12,9 @@ import {
   Player,
   PlayerData,
   PlayerTableId,
+  TokenCount,
+  TokenCountData,
+  TokenCountTableId,
   StoneUser,
   StoneToken 
 } from "../codegen/Tables.sol";
@@ -30,10 +33,8 @@ contract StoneSystem is System {
     StoneData memory existing = Stone.get(x,y);
     require(existing.owner == address(0) ,"stone pos occupied");
     Stone.set(x, y,x,y,token,_msgSender(),color);
-    StoneUser.set(x,y,_msgSender());
-    StoneToken.set(x,y,token);
     judgeStones(x,y,token,color);
-    addPlayerStone(x,y);
+    addPlayerStone(x,y,token);
   }
 
   //Othello logic. check between new stone and owned stone   
@@ -85,13 +86,14 @@ contract StoneSystem is System {
     }
   }
 
+
   function changeStone(int32 x, int32 y, address  token, string memory color) private {
     Stone.set(x,y,x,y,token,_msgSender(),color);
-    removePlayerStone(x,y);
-    addPlayerStone(x,y);
+    removePlayerStone(x,y,token);
+    addPlayerStone(x,y,token);
   }
 
-  function addPlayerStone(int32 x, int32 y) private {
+  function addPlayerStone(int32 x, int32 y,address  token) private {
     bytes32 player = bytes32(uint256(uint160(_msgSender())));
     PlayerData memory tp = Player.get(player);
     if(tp.x.length <= tp.last){
@@ -102,9 +104,16 @@ contract StoneSystem is System {
       Player.updateY(player,tp.last,y);
     }
     Player.setLast(player, tp.last + 1 );
+    StoneUser.set(x,y,_msgSender());
+    StoneToken.set(x,y,token);
+    TokenCountData memory data = TokenCount.get(token);
+    data.used ++;
+    data.vacant --;
+    TokenCount.set(token,data.total,data.used,data.vacant);
+
   }
 
-  function removePlayerStone(int32 x, int32 y) private {
+  function removePlayerStone(int32 x, int32 y,address  token) private {
     StoneData memory tstone = Stone.get(x,y);
     bytes32 tplayer = bytes32(uint256(uint160(tstone.owner)));
     PlayerData memory tpdata = Player.get(tplayer);
@@ -120,6 +129,12 @@ contract StoneSystem is System {
     Player.setX(tplayer, tpdata.x);
     Player.setY(tplayer, tpdata.y);
     Player.setLast(tplayer, tpdata.last-found);
+
+    TokenCountData memory tdata = TokenCount.get(token);
+    tdata.used--;
+    tdata.vacant++;
+    TokenCount.set(token,tdata.total,tdata.used,tdata.vacant);
+
   }
 
 }

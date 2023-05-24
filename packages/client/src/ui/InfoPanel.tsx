@@ -27,6 +27,11 @@ export const InfoPanel = () => {
   const tokens =   etokens.map(entity => getComponentValueStrict(Token, entity));
   console.log(tokens);
 
+  const etokencs = useEntityQuery([Has(TokenCount)]);
+  const tokenCounts =   etokencs.map(entity =>{return {...(getComponentValueStrict(TokenCount, entity)),adr:entity}});
+  console.log(tokenCounts);
+  const tokeninfos = tokens.map(v=>{let c = tokenCounts.filter(t=>t.adr==v.adr); return {...v, count:c[0] }} )
+
   const euts = useEntityQuery([Has(UserToken)]);
   const userTokens =   euts.map(entity => getComponentValueStrict(UserToken, entity));
   const playerTokens = userTokens.filter(u=>u.owner == playerEntity).map(pt=>{return {"tname":tokens.filter(t=>t.adr==pt.token)[0].name, "count":pt.count}});
@@ -76,10 +81,12 @@ export const InfoPanel = () => {
       </div>
       <div className={twMerge("row-start-1 col-start-4 col-span-2 row-span-1 justify-center items-center ")}>
         <ul className={twMerge("flex-col")}>
-        {tokens.map(token => (
+        {tokeninfos.map(token => (
           <li className="text-white" onClick={()=>{mint(token.adr)}}>
             {token.name} <img src={token.uri} className="h-16 object-cover rounded-md"></img> 
             <button >mint</button>
+            <br/>
+            {"used:" + token?.count?.used + "/ vacant:" + token?.count?.vacant }
             <br/>
           </li>
         ))}  
