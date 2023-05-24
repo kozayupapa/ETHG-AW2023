@@ -34,7 +34,10 @@ export const InfoPanel = () => {
 
   const euts = useEntityQuery([Has(UserToken)]);
   const userTokens =   euts.map(entity => getComponentValueStrict(UserToken, entity));
-  const playerTokens = userTokens.filter(u=>u.owner == playerEntity).map(pt=>{return {"tname":tokens.filter(t=>t.adr==pt.token)[0].name, "count":pt.count}});
+  const playerTokens = userTokens.filter(u=>u.owner == playerEntity).map(pt=>{
+    let t = tokens.filter(t=>t.adr==pt.token)[0];
+    return {"tname":t?t.name:"", "count":pt.count}
+  });
   console.log(playerTokens);
 
   const euns = useEntityQuery([Has(UserName)]);
@@ -62,7 +65,7 @@ export const InfoPanel = () => {
       <div>Your Have:<br/> 
         <ul>
           {playerTokens.map(pt => (
-            <li className="text-white">
+            <li key={pt.tname} className="text-white">
               {"  " + pt.tname} : {pt.count}  <br/>
             </li>
           ))}
@@ -73,7 +76,7 @@ export const InfoPanel = () => {
         Current Top 3<br/>
         <ul>
         {players.map(playerp => (
-          <li className="text-white">
+          <li className="text-white" key={playerp.x+"====" + playerp.y}>
             {playerp.last.toString()}  <br/>
           </li>
         ))}
@@ -82,7 +85,7 @@ export const InfoPanel = () => {
       <div className={twMerge("row-start-1 col-start-4 col-span-2 row-span-1 justify-center items-center ")}>
         <ul className={twMerge("flex-col")}>
         {tokeninfos.map(token => (
-          <li className="text-white" onClick={()=>{mint(token.adr)}}>
+          <li key={token.adr} className="text-white" onClick={()=>{mint(token.adr)}}>
             {token.name} <img src={token.uri} className="h-16 object-cover rounded-md"></img> 
             <button >mint</button>
             <br/>
