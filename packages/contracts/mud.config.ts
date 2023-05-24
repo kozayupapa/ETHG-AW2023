@@ -74,6 +74,14 @@ export default mudConfig({
         count: "int32",
       },
     },
+    UserName:{
+      keySchema:{
+        ko: "address",
+      },
+      schema:{
+        name: "string",
+      },      
+    },
     Token: {
       keySchema:{
         ka: "address",

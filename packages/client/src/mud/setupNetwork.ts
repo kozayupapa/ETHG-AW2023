@@ -113,6 +113,11 @@ export async function setupNetwork() {
     const worldSend = bindFastTxExecute(worldContract);
     await worldSend("minted",[address,count]);
   }
+  const setUser = async (name :string) => {
+    console.log("set Name ",name);
+    const worldSend = bindFastTxExecute(worldContract);
+    await worldSend("setUser",[name]);
+  }
 
   return {
     ...result,
@@ -121,5 +126,6 @@ export async function setupNetwork() {
     fastTxExecutor,
     playerEntity,
     mint,
+    setUser,
   };
 }

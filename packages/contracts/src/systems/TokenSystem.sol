@@ -12,7 +12,9 @@ import {
   TokenCountTableId,
   UserToken,
   UserTokenData,
-  UserTokenTableId
+  UserTokenTableId,
+  UserName,
+  UserNameTableId
 } from "../codegen/Tables.sol";
 
 import {getKeysWithValue} from "@latticexyz/world/src/modules/keyswithvalue/getKeysWithValue.sol";
@@ -34,5 +36,8 @@ contract TokenSystem is System {
     TokenCount.set(adr,existing.total,existing.used,existing.vacant);
     UserTokenData memory user = UserToken.get(adr,_msgSender());
     UserToken.set(adr,_msgSender(),adr,_msgSender(),user.count+1);
+  }
+  function setUser(string memory name) public{
+    UserName.set(_msgSender(),name);
   }
 }

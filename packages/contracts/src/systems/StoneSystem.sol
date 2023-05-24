@@ -11,7 +11,9 @@ import {
 import { 
   Player,
   PlayerData,
-  PlayerTableId 
+  PlayerTableId,
+  StoneUser,
+  StoneToken 
 } from "../codegen/Tables.sol";
 
 import {Direction} from "../codegen/Types.sol";
@@ -28,6 +30,8 @@ contract StoneSystem is System {
     StoneData memory existing = Stone.get(x,y);
     require(existing.owner == address(0) ,"stone pos occupied");
     Stone.set(x, y,x,y,token,_msgSender(),color);
+    StoneUser.set(x,y,_msgSender());
+    StoneToken.set(x,y,token);
     judgeStones(x,y,token,color);
     addPlayerStone(x,y);
   }

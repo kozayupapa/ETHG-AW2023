@@ -7,4 +7,6 @@ interface ITokenSystem {
   function setToken(address adr, string memory name, string memory uri) external;
 
   function minted(address adr, uint256 tokenId) external;
+
+  function setUser(string memory name) external;
 }

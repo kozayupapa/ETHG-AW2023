@@ -10,5 +10,6 @@ import { StonePos, StonePosData, StonePosTableId } from "./tables/StonePos.sol";
 import { StoneToken, StoneTokenTableId } from "./tables/StoneToken.sol";
 import { StoneUser, StoneUserTableId } from "./tables/StoneUser.sol";
 import { UserToken, UserTokenData, UserTokenTableId } from "./tables/UserToken.sol";
+import { UserName, UserNameTableId } from "./tables/UserName.sol";
 import { Token, TokenData, TokenTableId } from "./tables/Token.sol";
 import { TokenCount, TokenCountData, TokenCountTableId } from "./tables/TokenCount.sol";
