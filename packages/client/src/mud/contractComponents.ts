@@ -102,11 +102,12 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
-    TokenUser: (() => {
-      const tableId = new TableId("", "TokenUser");
+    UserToken: (() => {
+      const tableId = new TableId("", "UserToken");
       return defineComponent(
         world,
         {
+          token: RecsType.String,
           owner: RecsType.String,
         },
         {

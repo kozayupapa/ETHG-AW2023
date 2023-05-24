@@ -9,7 +9,9 @@ import {
   TokenTableId,
   TokenCount,
   TokenCountData,
-  TokenCountTableId 
+  TokenCountTableId,
+  UserToken,
+  UserTokenTableId
 } from "../codegen/Tables.sol";
 
 import {getKeysWithValue} from "@latticexyz/world/src/modules/keyswithvalue/getKeysWithValue.sol";
@@ -26,6 +28,9 @@ contract TokenSystem is System {
   function minted(address adr, uint256 tokenId) public {
     require(adr != address(0), "cannot mint to address 0");
     TokenCountData memory existing = TokenCount.get(adr);
-    TokenCount.set(adr,existing.total++,existing.used,existing.vacant++);
+    existing.total++;
+    existing.vacant++;
+    TokenCount.set(adr,existing.total,existing.used,existing.vacant);
+    UserToken.set(adr,_msgSender(),adr,_msgSender());
   }
 }

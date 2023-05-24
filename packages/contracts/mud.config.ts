@@ -63,12 +63,14 @@ export default mudConfig({
         owner: "address",
       },
     },
-    TokenUser: {
+    UserToken: {
       keySchema:{
         ka: "address",
+        ko: "address",
       },
       schema:{
-        owner: "address",
+        token: "address",
+        owner: "address",        
       },
     },
     Token: {
