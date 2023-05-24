@@ -35,6 +35,42 @@ export default mudConfig({
         color: "string",
       },
     },
+    StonePos: {
+      keySchema:{
+        xk: "int32",
+        yk: "int32",
+      },
+      schema:{
+        x: "int32",
+        y: "int32",
+      },
+    },
+    StoneToken: {
+      keySchema:{
+        xk: "int32",
+        yk: "int32",
+      },
+      schema:{
+        token: "address",
+      },
+    },
+    StoneUser: {
+      keySchema:{
+        xk: "int32",
+        yk: "int32",
+      },
+      schema:{
+        owner: "address",
+      },
+    },
+    TokenUser: {
+      keySchema:{
+        ka: "address",
+      },
+      schema:{
+        owner: "address",
+      },
+    },
     Token: {
       keySchema:{
         ka: "address",
@@ -43,6 +79,16 @@ export default mudConfig({
         adr: "address",
         name: "string",
         uri: "string",
+      },
+    },
+    TokenCount: {
+      keySchema:{
+        ka: "address",
+      },
+      schema:{
+        total: "uint256",
+        used: "uint256",
+        vacant: "uint256",
       },
     }
   },

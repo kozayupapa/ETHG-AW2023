@@ -56,6 +56,67 @@ export function defineContractComponents(world: World) {
         }
       );
     })(),
+    StonePos: (() => {
+      const tableId = new TableId("", "StonePos");
+      return defineComponent(
+        world,
+        {
+          x: RecsType.Number,
+          y: RecsType.Number,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
+    StoneToken: (() => {
+      const tableId = new TableId("", "StoneToken");
+      return defineComponent(
+        world,
+        {
+          token: RecsType.String,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
+    StoneUser: (() => {
+      const tableId = new TableId("", "StoneUser");
+      return defineComponent(
+        world,
+        {
+          owner: RecsType.String,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
+    TokenUser: (() => {
+      const tableId = new TableId("", "TokenUser");
+      return defineComponent(
+        world,
+        {
+          owner: RecsType.String,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
     Token: (() => {
       const tableId = new TableId("", "Token");
       return defineComponent(
@@ -64,6 +125,23 @@ export function defineContractComponents(world: World) {
           adr: RecsType.String,
           name: RecsType.String,
           uri: RecsType.String,
+        },
+        {
+          metadata: {
+            contractId: tableId.toHexString(),
+            tableId: tableId.toString(),
+          },
+        }
+      );
+    })(),
+    TokenCount: (() => {
+      const tableId = new TableId("", "TokenCount");
+      return defineComponent(
+        world,
+        {
+          total: RecsType.BigInt,
+          used: RecsType.BigInt,
+          vacant: RecsType.BigInt,
         },
         {
           metadata: {
