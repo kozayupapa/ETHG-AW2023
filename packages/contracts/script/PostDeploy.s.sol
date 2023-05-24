@@ -18,17 +18,17 @@ contract PostDeploy is Script {
     address adr1 = deployCode("MockTokenWhite.sol");
     console.log("Deployed MockWhite: ", adr1);
     MockTokenWhite t1 = MockTokenWhite(adr1);
-    uint256 id1 = t1.mint("https://data.nounsjp.wtf/pfp/images/107.png");
+    uint256 id1 = t1.mint();
     console.log("owner of id:",id1 , " addr:",t1.ownerOf(id1));
 
     address adr2 = deployCode("MockTokenBlack.sol");
     console.log("Deployed MockBlack: ", adr2);
     MockTokenBlack t2 = MockTokenBlack(adr2);
-    uint256 id2 = t2.mint("https://data.nounsjp.wtf/pfp/images/8.png");
+    uint256 id2 = t2.mint();
     console.log("owner of id:",id2 , " addr:",t2.ownerOf(id2));
 
-    world.setToken(adr1,t1.name(),t1.tokenURI(id1));
-    world.setToken(adr2,t2.name(),t2.tokenURI(id2));
+    world.setToken(adr1,t1.name(),"https://data.nounsjp.wtf/pfp/images/107.png");
+    world.setToken(adr2,t2.name(),"https://data.nounsjp.wtf/pfp/images/8.png");
 
     vm.stopBroadcast();
   }

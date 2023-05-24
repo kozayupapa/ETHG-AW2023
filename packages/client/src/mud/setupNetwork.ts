@@ -104,8 +104,14 @@ export async function setupNetwork() {
     console.log("mint to ",address);
     const tokenContract = new Contract(address, OthelloToken.abi, signerOrProvider);
     const tokenTx = bindFastTxExecute(tokenContract);
-    const id = await tokenTx("mint",[""]);
-    console.log(id);
+    const count = await tokenContract.totalSupply();
+    console.log(count);
+    const tx1 = await tokenTx("mint",[]);
+    console.log(tx1);
+    const tx2  = await tokenTx("approve",[networkConfig.worldAddress,count]);
+    console.log(tx2);
+    const worldSend = bindFastTxExecute(worldContract);
+    await worldSend("minted",[address,count]);
   }
 
   return {
